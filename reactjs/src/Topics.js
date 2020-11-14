@@ -1,5 +1,5 @@
 import React from 'react';
-import Title from './Title';
+import Title from './Common/Title';
 import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -12,6 +12,10 @@ import Grid from '@material-ui/core/Grid';
 import BackspaceIcon from '@material-ui/icons/Backspace';
 import TextField from '@material-ui/core/TextField';
 
+//REDUX
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+
 const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(5),
@@ -21,41 +25,51 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Topics({user,setUser, updateUser, topics, setTopics}) {
+export default function Topics() {
   const classes = useStyles();
+
+  //REDUX
+  const dispatch = useDispatch()
+  //const selectNews = state => state.news;
+  //const reduxNews = useSelector(selectNews);
+  const selectUser = state => state.user;
+  const reduxUser = useSelector(selectUser);
+
   //var keywords = {}
   //var userSources = user.sources;
   //if(sources)
   //console.log(user)
   //var topics = {"test":3};
-  var t = []
-  if(topics)
-    t = topics;
+  //var t = []
+  //if(topics)
+  //  t = topics;
   const handleRemoveTopic = (topic) => {
+    dispatch({type:'user/topicRemoved',payload:topic})
     //var f = filters;
-    if(t.indexOf(topic)!=-1){
-      t.splice(t.indexOf(topic),1)
-      setTopics(t);
-      var u = Object.assign(user, {topics:t})
-      setUser(u);
-      updateUser(u);
-    }
+    //if(t.indexOf(topic)!=-1){
+    //  t.splice(t.indexOf(topic),1)
+    //  setTopics(t);
+    //  var u = Object.assign(user, {topics:t})
+    //  setUser(u);
+    //  updateUser(u);
+    //}
   }
   const handleAddTopic = (e) => {
-    console.log(e.keyCode)
+    //console.log(e.keyCode)
     if(e.keyCode == 13){
-      console.log("IN")
-      if(t.indexOf(e.target.value)==-1){
-        var tmp = t.push(e.target.value)
-        setTopics(tmp)
-        var u = Object.assign(user, {topics:t})
-        setUser(u);
-        updateUser(u);
-      }
+      dispatch({type:'user/topicAdded',payload:e.target.value })
+      //console.log("IN")
+      //if(t.indexOf(e.target.value)==-1){
+      //  var tmp = t.push(e.target.value)
+      //  setTopics(tmp)
+      //  var u = Object.assign(user, {topics:t})
+      //  setUser(u);
+      //  updateUser(u);
+      //}
     }
     //var f = filters;
   }
-  console.log(user.topics);
+  //console.log(user.topics);
   //if(user.topics){
   //  topics = user.topics;
   //}
@@ -77,8 +91,8 @@ export default function Topics({user,setUser, updateUser, topics, setTopics}) {
       <Paper className={classes.paper}>
       <Title>Topics</Title>
       <div>
-      {t.map((topic) => (
-        <React.Fragment key={t}>
+      {reduxUser.topics.map((topic) => (
+        <React.Fragment key={topic}>
         {topic}
         <IconButton
         size="small"

@@ -18,12 +18,12 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { useOktaAuth } from '@okta/okta-react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
-import logo from './Common/logo.png';
+import logo from '../Common/logo.png';
 
-import Profile from './User/Profile';
-import Sources from './Sources';
-import Topics from './Topics';
-import Analytics from './Analytics'
+import Profile from '../User/Profile';
+import Sources from '../Sources';
+import Topics from '../Topics';
+import Analytics from '../Analytics'
 import Dashboard from './Dashboard';
 
 import ListItem from '@material-ui/core/ListItem';
@@ -39,16 +39,15 @@ import BubbleChartIcon from '@material-ui/icons/BubbleChart';
 
 import moment from 'moment';
 
-var config = {
-  //server : "http://localhost:8529", // local
-  server : "https://athena.slapps.fr",
-  //dbUrl : "/_db/_system/hephaistos" // local
-  dbUrl : "/_db/production/apollo",
-  usersDbUrl : "/_db/production/athena",
-}
+//REDUX
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+
+//CONFIG
+import apiConfig from './apiConfig';
 
 function getUser(user,cb){
-  var q = config.server+config.usersDbUrl+"/users/"+user.sub
+  var q = apiConfig.server+apiConfig.usersDbUrl+"/users/"+user.sub
   //console.log(q)
   fetch(q)
       .then(result=>result.json())
@@ -57,6 +56,7 @@ function getUser(user,cb){
             createUser(user, cb);
             else{
               cb(Object.assign(user,u[0]));
+
             }
           //console.log(u);
 
@@ -65,7 +65,7 @@ function getUser(user,cb){
 
 
 function createUser(user,cb){
-  var q = config.server+config.usersDbUrl+"/users/"
+  var q = apiConfig.server+apiConfig.usersDbUrl+"/users/"
   //console.log(q)
   fetch(q,{
     method:'POST',
@@ -81,22 +81,6 @@ function createUser(user,cb){
       });
 }
 
-function updateUser(user){
-  var q = config.server+config.usersDbUrl+"/users/"+user._key
-  //console.log(q)
-  fetch(q,{
-    method:'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(user),
-  })
-      .then(result=>result.json())
-      .then(u=>{
-          //console.log(u);
-          //console.log("User updated");
-      });
-}
 function processNews(news){
   var processedNews = [];
   var seen = {}
@@ -119,7 +103,7 @@ function processNews(news){
 }
 
 function getSources(cb){
-  var q = config.server+config.dbUrl+"/sources"
+  var q = apiConfig.server+apiConfig.dbUrl+"/sources"
   //console.log(q)
   fetch(q)
       .then(result=>result.json())
@@ -153,7 +137,7 @@ function getNews(cb){
   var e = end.toISOString();
   //console.log("e:"+e);
   //var q = "https://apollo-loopback.slapps.fr/api/News?filter[where][and][0][datetime][gt]="+s+"&filter[where][and][1][datetime][lt]="+e
-  var q = config.server+config.dbUrl+"/news";
+  var q = apiConfig.server+apiConfig.dbUrl+"/news";
   //console.log(q)
   fetch(q)
       .then(result=>result.json())
@@ -267,19 +251,28 @@ export default function Main({url}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [userRequested, setUserRequested] = React.useState(false);
-  const [user, setUser] = React.useState({_key:0});
-  const [sources, setSources] = React.useState([]);
-  const [news, setNews] = React.useState([])
-  const [sourcesFiltered, setSourcesFiltered] = React.useState(false)
-  const [keywordsFiltered, setKeywordsFiltered] = React.useState(false)
-  const [keywordsFilteredNews, setKeywordsFilteredNews] = React.useState([])
-  const [sourcesFilteredNews, setSourcesFilteredNews] = React.useState([])
-  const [topics, setTopics] = React.useState([])
-  const [filters, setFilters] = React.useState({
+  //const [user, setUser] = React.useState({_key:0});
+  //const [sources, setSources] = React.useState([]);
+  //const [news, setNews] = React.useState([])
+  //const [sourcesFiltered, setSourcesFiltered] = React.useState(false)
+  //const [keywordsFiltered, setKeywordsFiltered] = React.useState(false)
+  //const [keywordsFilteredNews, setKeywordsFilteredNews] = React.useState([])
+  //const [sourcesFilteredNews, setSourcesFilteredNews] = React.useState([])
+  //const [topics, setTopics] = React.useState([])
+  //const [filters, setFilters] = React.useState({
     //TODO - Sources per user
-    keywords:[],
-    noKeywords:[]
-  })
+  //  keywords:[],
+  //  noKeywords:[]
+  //})
+
+  //REDUX
+  const dispatch = useDispatch()
+  const selectNews = state => state.news;
+  const reduxNews = useSelector(selectNews);
+  const selectSources = state => state.sources;
+  const reduxSources = useSelector(selectSources);
+  const selectUser = state => state.user;
+  const reduxUser = useSelector(selectUser);
   //const [lastVisitSet, setLastVisitSet] = React.useState(false)
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -287,7 +280,7 @@ export default function Main({url}) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  /*
   const filterBySources = (news, sources) => {
     var sourcesFilteredNews = [];
     news.forEach(n =>{
@@ -297,7 +290,8 @@ export default function Main({url}) {
     })
     return sourcesFilteredNews;
   }
-
+  */
+  /*
   const filterByKeywords = (news, keywords, noKeywords) => {
     var keywordsFilteredNews = [];
     news.forEach(n =>{
@@ -330,7 +324,7 @@ export default function Main({url}) {
     })
     return keywordsFilteredNews;
   }
-
+  */
   //const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   //console.log(authState.isAuthenticated);
   if (authState.isPending) {
@@ -351,32 +345,43 @@ export default function Main({url}) {
       authService.getUser().then((info) => {
         //setUserInfo(info);
         //console.log(info);
+        getSources(sources=>{
+          dispatch({type:'sources/sourcesRetrieved', payload:sources})
+        });
+        getNews(news =>{
+          //setNews(news);
+          dispatch({type:'news/newsRetrieved',payload:news})
+        });
         getUser(info, (u)=>{
           //console.log(u)
           //INIT
-          if(!u.sources)
-            u.sources = [];
+          //if(!u.sources)
+          //  u.sources = [];
           //if(!lastVisitSet){
           //  console.log("LAST VISIT")
           //  setLastVisitSet(true)
           //VISITS
           //console.log("VISITS");
-          var now = moment();
-          if(!u.visits)
-            u.visits = [];
-          u = Object.assign(u, {visits:[...u.visits,now.toString()]})
+          //var now = moment();
+          //if(!u.visits)
+          //  u.visits = [];
+          //u = Object.assign(u, {visits:[...u.visits,now.toString()]})
           //console.log(u.visits);
           //var u2 = Object.assign(u, {visits:[..]})
-          updateUser(u);
-          setUser(u)
-          console.log("TOPICS")
-          var t = []
-          if(!u.topics)
-            t = u.topics;
-          setTopics(t)
+          //updateUser(u);
+          dispatch({type:'user/retrieved', payload:u})
+          dispatch({type:'user/lastVisitUpdated', payload:moment().toString()})
+          //setUser(u)
+
+          //console.log("TOPICS")
+          //var t = []
+          //if(!u.topics)
+          //  t = u.topics;
+          //setTopics(t)
           //}
-          getSources(setSources);
-          getNews(setNews);
+
+
+
           //console.log("TOPICS")
           //console.log(u.topics)
         });
@@ -385,46 +390,47 @@ export default function Main({url}) {
     }
   //console.log(filteredNews);
   //console.log(filters);
-  if(news.length!==0 && !sourcesFiltered){
+  //if(reduxNews.length!==0 && !sourcesFiltered){
 
-    setSourcesFilteredNews([])
-    setKeywordsFilteredNews([])
-    setSourcesFiltered(true);
-    var f = filterBySources(news, user.sources);
-    setSourcesFilteredNews(f);
-    setKeywordsFilteredNews(f);
+    //setSourcesFilteredNews([])
+    //setKeywordsFilteredNews([])
+    //setSourcesFiltered(true);
+    //var f = filterBySources(reduxNews, []);
+    //setSourcesFilteredNews(f);
+    //setKeywordsFilteredNews(f);
     //console.log("Sources filtered")
     //console.log(f.length);
     //console.log(f);
-  }
+  //}
 
   //FILTER
   //console.log(sourcesFiltered);
   //console.log(sourcesFilteredNews.length);
-  if(!keywordsFiltered){
-    setKeywordsFilteredNews([])
-    setKeywordsFiltered(true);
-    var f = filterByKeywords(sourcesFilteredNews, filters.keywords, filters.noKeywords);
+  //if(!keywordsFiltered){
+    //setKeywordsFilteredNews([])
+    //setKeywordsFiltered(true);
+    //var f = filterByKeywords(sourcesFilteredNews, filters.keywords, filters.noKeywords);
     //console.log(news);
     //console.log("filtered news");
-    setKeywordsFilteredNews(f);
+    //setKeywordsFilteredNews(f);
     //console.log("Keywords filtered")
     //console.log(f.length);
-  }
+  //}
   //console.log(url)
   var content = null;
   if(url==="profile")
-    content = <Profile user={user} setUser={setUser} updateUser={updateUser}/>
+    content = <Profile/>
   if(url==="sources")
-    content = <Sources user={user} setUser={setUser} sources={sources} setSourcesFiltered={setSourcesFiltered} setKeywordsFiltered={setKeywordsFiltered} updateUser={updateUser}/>
+    content = <Sources/>
   if(url==="topics")
-    content = <Topics topics={topics} setTopics={setTopics} user={user} setUser={setUser} updateUser={updateUser}/>
+    content = <Topics/>
   if(url==="analytics")
-    content = <Analytics user={user}/>
+    content = <Analytics/>
   if(url==="dashboard")
-    content = <Dashboard topics={topics} user={user} updateUser={updateUser} setUser={setUser} sourcesFilteredNews={sourcesFilteredNews} keywordsFilteredNews={keywordsFilteredNews} setFilters={setFilters} filters={filters} setKeywordsFiltered={setKeywordsFiltered}/>
+    content = <Dashboard/>
 
-  //console.log(fetch);
+
+  //console.log(reduxUser);
   return (
     <div className={classes.root}>
       <CssBaseline />

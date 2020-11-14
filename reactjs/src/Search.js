@@ -1,5 +1,5 @@
 import React from 'react';
-import Title from './Title';
+import Title from './Common/Title';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
@@ -11,18 +11,31 @@ import BackspaceIcon from '@material-ui/icons/Backspace';
 import BackspaceOutlinedIcon from '@material-ui/icons/BackspaceOutlined';
 import { createMuiTheme, withStyles, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 
-export default function Search({filters, setFilters, setKeywordsFiltered}) {
+//REDUX
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux'
+
+export default function Search() {
+
+  const dispatch = useDispatch()
+  //const selectUser = state => state.user;
+  //const reduxUser = useSelector(selectUser);
+  const selectFilters = state => state.filters;
+  const reduxFilters = useSelector(selectFilters);
+
   //var search = {}
   const handleSearchChange = (search) => {
-    var f = {}
-    if(search!=="")
-      f = Object.assign(filters, {keywords:[search],noKeywords:[]})
-    else
-      f = Object.assign(filters, {keywords:[],noKeywords:[]})
-    console.log(f)
+    //var f = {}
+    //if(search!=="")
+    //  f = Object.assign(filters, {keywords:[search],noKeywords:[]})
+    //else
+    //  f = Object.assign(filters, {keywords:[],noKeywords:[]})
+    //console.log(f)
     console.log(search)
-    setFilters(f);
-    setKeywordsFiltered(false);
+    //setFilters(f);
+    //setKeywordsFiltered(false);
+    dispatch({type:'filters/filtersReset'})
+    dispatch({type:'filters/keywordToggled', payload:search.split(' ')})
 
   }
 

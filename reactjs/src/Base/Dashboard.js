@@ -5,11 +5,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
-import Search from './Search';
-import DashboardTopics from './DashboardTopics';
-import Keywords from './Keywords';
-import Day from './Day';
-import News from './News';
+import Search from '../Search';
+import DashboardTopics from '../DashboardTopics';
+import Keywords from '../Keywords';
+import Day from '../Common/Day';
+import News from '../News';
 
 
 const useStyles = makeStyles(theme => ({
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Dashboard({topics, setTopics, user, updateUser, setUser, sourcesFilteredNews, keywordsFilteredNews, filters, setFilters, setKeywordsFiltered}) {
+export default function Dashboard() {
   const classes = useStyles();
   const paper = clsx(classes.paper);
 
@@ -34,24 +34,24 @@ export default function Dashboard({topics, setTopics, user, updateUser, setUser,
     <Grid container direction="row" spacing={3}>
       <Grid item xs={12} md={3} lg={3}>
         <Paper className={paper}>
-          <Day user={user}/>
+          <Day/>
         </Paper>
         <br/>
         <Paper className={paper}>
-          <Search filters={filters} setFilters={setFilters} setKeywordsFiltered={setKeywordsFiltered}/>
+          <Search />
         </Paper>
         <br/>
         <Paper className={paper}>
-          <DashboardTopics topics={topics} sourcesFilteredNews={sourcesFilteredNews} keywordsFilteredNews={keywordsFilteredNews} filters={filters} setFilters={setFilters} setKeywordsFiltered={setKeywordsFiltered}/>
+          <DashboardTopics/>
         </Paper>
         <br/>
         <Paper className={paper}>
-          <Keywords sourcesFilteredNews={sourcesFilteredNews} keywordsFilteredNews={keywordsFilteredNews} filters={filters} setFilters={setFilters} setKeywordsFiltered={setKeywordsFiltered}/>
+          <Keywords/>
         </Paper>
       </Grid>
       <Grid item xs={12} md={9} lg={9}>
         <Paper className={classes.paper}>
-          <News user={user} updateUser={updateUser} setUser={setUser} keywordsFilteredNews={keywordsFilteredNews}/>
+          <News/>
         </Paper>
       </Grid>
     </Grid>

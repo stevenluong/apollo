@@ -1,12 +1,12 @@
 import React from 'react';
 import { Route, useHistory, Switch } from 'react-router-dom';
 import { Security, SecureRoute, LoginCallback } from '@okta/okta-react';
-import SignInSide from './User/SignInSide';
-import SignUp from './User/SignUp';
+import SignInSide from '../User/SignInSide';
+import SignUp from '../User/SignUp';
 import Main from './Main';
 //import Profile from './User/Profile';
-import config from './User/app.config';
-import Notfound from './Common/NotFound'
+import oktaConfig from '../User/app.config';
+import Notfound from '../Common/NotFound'
 
 const AppWithRouterAccess = () => {
   const history = useHistory();
@@ -15,15 +15,15 @@ const AppWithRouterAccess = () => {
   };
 
   return (
-    <Security issuer={config.issuer}
-              clientId={config.clientId}
-              redirectUri={config.redirectUri}
+    <Security issuer={oktaConfig.issuer}
+              clientId={oktaConfig.clientId}
+              redirectUri={oktaConfig.redirectUri}
               onAuthRequired={onAuthRequired}
               pkce={true} >
       <Switch>
         <SecureRoute path='/' exact={true} render={() => <Main url="dashboard" />} />
-        <Route path='/login' render={() => <SignInSide baseUrl={config.url} />} />
-        <Route path='/signup' render={() => <SignUp baseUrl={config.url} />} />
+        <Route path='/login' render={() => <SignInSide baseUrl={oktaConfig.url} />} />
+        <Route path='/signup' render={() => <SignUp baseUrl={oktaConfig.url} />} />
         <Route path='/implicit/callback' component={LoginCallback} />
         <SecureRoute path='/profile' render={() => <Main url="profile" />} />
         <SecureRoute path='/sources' render={() => <Main url="sources" />} />

@@ -50,7 +50,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignUp = ({baseUrl}) => {
-  const { authState, authService } = useOktaAuth();
+  //const { authState, authService } = useOktaAuth();
+  const { authService } = useOktaAuth();
   const classes = useStyles();
   const [error, setError] = React.useState(null);
   const [email, setEmail] = React.useState('');
@@ -59,7 +60,6 @@ const SignUp = ({baseUrl}) => {
   const [lastName, setLastName] = React.useState('');
   const [sessionToken, setSessionToken] = React.useState(null);
   const [country, setCountry] = React.useState('');
-  const APP = "apollo";
   const signup = (e) =>{
     e.preventDefault();
     const oktaAuth = new OktaAuth({ url: baseUrl });
@@ -69,12 +69,12 @@ const SignUp = ({baseUrl}) => {
           'Content-Type': 'application/json',
           //mode: 'no-cors'
         },
-        body: JSON.stringify({firstName,lastName, email, password, country, APP})
+        body: JSON.stringify({firstName,lastName, email, password, country})
       })
         .then(res => {
           console.log(res);
           if(res.status&&res.status===400)
-            setError("Error while signing up - "+res.statusText)
+            setError(res.statusText)
           oktaAuth
             .signIn({
               username: email,
@@ -85,7 +85,7 @@ const SignUp = ({baseUrl}) => {
             });
         })
         .catch(err => {
-          setError("Error while signing up - "+err.message)
+          setError(err.message)
           console.log(err)
         });
   };
@@ -101,9 +101,9 @@ const SignUp = ({baseUrl}) => {
   const handleLastNameChange = (e) => {
     setLastName(e.target.value);
   };
-  const handleCountryChange = (e) => {
-    setCountry(e.target.value);
-  };
+  //const handleCountryChange = (e) => {
+  //  setCountry(e.target.value);
+  //};
   const errorMessage = error ? (
         <Alert severity="error">{error}</Alert>
       ) : null;
@@ -175,7 +175,7 @@ const SignUp = ({baseUrl}) => {
                 onChange={handlePasswordChange}
               />
             </Grid>
-            <Grid item xs={12} hidden={true}>
+            <Grid item xs={12}>
               <FormControlLabel
                 control={<Checkbox value="allowExtraEmails" color="primary" />}
                 label="I agree to I want to receive updates by email from Steven Luong. I consent Steven Luong processing my personal data. I understand that I can withdraw my consent at any time."

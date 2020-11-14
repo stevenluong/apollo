@@ -8,6 +8,8 @@ import Title from '../Common/Title';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
+import usersHelpers from './helpers';
+
 const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(5),
@@ -19,14 +21,14 @@ const useStyles = makeStyles(theme => ({
 
 
 
-export default function Profile({user,setUser, updateUser}) {
+export default function Profile({user,setUser}) {
   const classes = useStyles();
 
   const [edit, setEdit] = React.useState(false);
   //console.log(fetch);
-  const handleEmailChange = (e) => {
-    setUser({...user, email:e.target.value});
-  };
+  //const handleEmailChange = (e) => {
+  //  setUser({...user, email:e.target.value});
+  //};
   const handleBirthdateChange = (e) => {
     setUser({...user, birthdate:e.target.value});
   };
@@ -40,12 +42,13 @@ export default function Profile({user,setUser, updateUser}) {
     setUser({...user, salary:e.target.value});
   };
 
+
   const handleEdit = () => {
     setEdit(true);
     //removeAsset(asset)
   };
   const handleSave = () => {
-    updateUser(user)
+    usersHelpers.editUser(user,setUser)
     setEdit(false);
   };
   return (
