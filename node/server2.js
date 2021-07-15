@@ -20,13 +20,20 @@ cronJob.start();
 //MAIN
 var process = function(){
   //console.log("DEBUG")
+    var date = new Date();
     getSources(function(sources){
         console.log(sources);
         sources.map(source => {
-            getNewTitles(source.rss_url,source.name,function(titles){
+            getNewTitles(source, function(titles){
+
+	        console.log(source.name);
                 //console.log(source.name);
                 //console.log(titles);
-                putTitles(titles);
+		console.log(titles.length);
+		//var filteredTitles = titles.filter(Boolean);
+		//console.log(filteredTitles.length);
+                if(titles.length)
+		    putTitles(titles, updateSource(source, date));
             });
         });
     });
@@ -53,37 +60,59 @@ function normalizeDate(date){
     return parseInt(year+month+day+hours+minutes+seconds+milli);
 };
 */
-//TODO PUT a title
+
+var updateSource = function(source, datetime){
+    source.lastPulled = datetime;
+    console.log("DEBUG - update source - "+source.name+" - Start");
+    request.put({url:protocol+"://"+server_host+sources_path+"/"+source._key,json:source},function(error,response,body){
+        if (!error && (response.statusCode == 200|| response.statusCode == 204)) {
+            //console.log("error ON ");
+            console.log("DEBUG - update source - Done");
+            //console.log(body);
+        }else{
+            //console.log(body);
+            //console.log(error);
+        }
+    })
+
+}
+
 var putTitles = function(titles){
     //request.put("http://"+server_host+":"+server_port+news_path,title,function(error,response,body){
+    console.log("DEBUG - put titles - Start");
     request.put({url:protocol+"://"+server_host+news_path,json:titles},function(error,response,body){
-        console.log("DEBUG");
-        if (!error && response.statusCode == 200) {
+
+	//console.log(response.statusCode);
+        if (!error && (response.statusCode == 200|| response.statusCode == 204)) {
+            console.log("DEBUG - put titles - Done");
             //console.log("error ON ");
             //console.log(body);
         }else{
             //console.log(body);
-            console.log("DEBUG - DONE");
             //console.log(error);
         }
     })
 }
+
 //TODO TEST
 //putTitle(title);
+
 //GET ALL SOURCES
 function getSources(callback){
     request.get(protocol+"://"+server_host+sources_path,function(error,response,body){
         if (!error && response.statusCode == 200) {
             var sources = JSON.parse(body);
-            console.log(sources[0])
+            //console.log(sources[0])
             callback(sources);
         }else{
             console.log(error);
         }
     })
 }
+
 //TODO OPTI GET all news
-var getNewTitles = function(sourceLink, sourceName,callback){
+var getNewTitles = function(source, callback){
+    var sourceLink = source.rss_url
     var titles=[];
     var feedparser = new FeedParser();
     var req = request(sourceLink);
@@ -108,14 +137,25 @@ var getNewTitles = function(sourceLink, sourceName,callback){
     feedparser.on('readable', function() {
         var item;
         while (item = this.read()) {
-            //TODO filter items
-            titles.push(read(sourceName,item));
+	    //console.log(item);
+            //TODO clean this
+	    var date = item.date ? item.date : item.meta.date;   
+		/*
+	    if(source.name=="BBC"){
+	       console.log(date);
+	       console.log(new Date(source.lastPulled)<=new Date(date));
+	    }
+	    */
+            if(new Date(source.lastPulled)<=new Date(date)){
+              titles.push(read(source,item));
+	    }
         };
     });
 
 }
 //SPECIFIC
-function read(sourceName,item){
+function read(source,item){
+    var sourceName = source.name;
     //console.log("date:"+item.pubDate);
     //console.log("title:"+item.title);
     var date = item.pubDate;
@@ -147,14 +187,17 @@ function read(sourceName,item){
         img=getImageLink(item,'src="','"');
 
     //var key = nDate+':'+sourceName;
+    //if(source.lastPulled<=date)
     return {
-        //guid: key,
-        title: normalize(item.title),
-        link: item.link,
-        image_link: img,
-        datetime: date,
-        source: sourceName
+	//guid: key,
+	title: normalize(item.title),
+	link: item.link,
+	image_link: img,
+	datetime: date,
+	source: sourceName
     }
+    //else
+//	return null
 };
 function getImageLink(item,start,end){
     var field = item.description;
