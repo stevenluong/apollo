@@ -50,6 +50,7 @@ export default function Analytics() {
   //  })
   //})
   sortedInterests = reduxUser.interests.sort((a,b) => (b.count-a.count))
+  console.log(sortedInterests)
   //topics = user.topics;
   //var sortedTopics = []
 
@@ -61,15 +62,12 @@ export default function Analytics() {
       <Grid item xs={12} md={12} lg={12}>
       <Paper className={classes.paper}>
       <Title>Analytics</Title>
-      <div>
       {sortedInterests.map(i => (
-        <React.Fragment key={i.word}>
+        <div key={i.word}>
         {i.word} - {i.count}
         <br/>
-        </React.Fragment>
+        </div>
       ))}
-      </div>
-
       </Paper>
       </Grid>
     </Grid>

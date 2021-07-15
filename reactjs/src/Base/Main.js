@@ -81,6 +81,7 @@ function createUser(user,cb){
       });
 }
 
+/*
 function processNews(news){
   var processedNews = [];
   var seen = {}
@@ -101,6 +102,7 @@ function processNews(news){
   })
   return processedNews;
 }
+*/
 
 function getSources(cb){
   var q = apiConfig.server+apiConfig.dbUrl+"/sources"
@@ -145,13 +147,15 @@ function getNews(cb){
           //console.log(titles);
           //this.setState({titles:titles});
           var news = []
-          titles.forEach(t =>{
-            //console.log(t.source);
-            //if(["Challenges","JDG", "The Verge", "Korben", "LifeHacker"].indexOf(t.source)!==-1) //TODO - configure
-              t.time = moment(t.datetime).format("HH:mm")
-              news.push(t)
-          })
-          news = processNews(news);
+          news = titles.map(n=>{
+            return {
+              ...n,
+              link:n.link.replace("http:","https:"),
+              image_link:n.image_link.replace("http:","https:"),
+              time:moment(n.datetime).format("HH:mm"),
+              title:n.title.trim().charAt(0).toUpperCase() + n.title.trim().slice(1)
+            }
+          }
           //news = titles;
           cb(news);
       });

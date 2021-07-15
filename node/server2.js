@@ -1,7 +1,7 @@
 //TODO requires
 var request = require('request');
 var FeedParser = require('feedparser');
-var CronJob = require('cron').CronJob;
+
 //TODO vars
 var server_host= "athena.slapps.fr";
 var protocol= "https";
@@ -9,14 +9,7 @@ var protocol= "https";
 //var server_port = "3000";
 var news_path = '/_db/production/apollo/news';
 var sources_path = '/_db/production/apollo/sources';
-//TODO MAIN
-var cronJob = new CronJob({
-    cronTime: '0 0 * * * *',
-    onTick: function() {
-        process();
-    }
-});
-cronJob.start();
+
 //MAIN
 var process = function(){
   //console.log("DEBUG")
@@ -38,7 +31,7 @@ var process = function(){
         });
     });
 };
-process();
+
 var date = new Date();
 var testTitle = {
     //guid: normalizeDate(date)+":JDG",
@@ -215,3 +208,15 @@ function normalize(title){
 //var sourceLink = "http://www.challenges.fr/rss.xml";
 //var sourceName = "TEST";
 //getNewTitles();
+
+process();
+
+//CRON
+var CronJob = require('cron').CronJob;
+var cronJob = new CronJob({
+    cronTime: '0 0 * * * *',
+    onTick: function() {
+        process();
+    }
+});
+cronJob.start();
