@@ -10,11 +10,14 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@okta/okta-auth-js": "^4.1.2",
     "@okta/okta-react-native": "^1.4.4",
+    "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.8.9",
     "@react-navigation/stack": "^5.12.6",
     "@reduxjs/toolkit": "^1.4.0",
+    "events": "^3.2.0",
     "moment": "^2.29.1",
     "react": "16.13.1",
     "react-native": "0.63.3",
@@ -23,8 +26,11 @@
     "react-native-reanimated": "^1.13.1",
     "react-native-safe-area-context": "^3.1.9",
     "react-native-screens": "^2.14.0",
+    "react-native-securerandom": "^1.0.0",
     "react-native-vector-icons": "^7.1.0",
-    "react-redux": "^7.2.2"
+    "react-native-webview": "^10.10.2",
+    "react-redux": "^7.2.2",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

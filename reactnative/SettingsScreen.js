@@ -22,6 +22,7 @@ import {
   CheckBox
   } from 'react-native-elements';
 
+import { signOut} from '@okta/okta-react-native';
 
 export default function SettingsScreen({navigation}) {
   //const dispatch = useDispatch()
@@ -33,14 +34,19 @@ export default function SettingsScreen({navigation}) {
 
   const handleLogout = () => {
     //dispatch({type:"user/userLoggedOut"})
+    signOut()
     navigation.navigate('Login')
   }
   //var news = reduxNews.slice(0,20).sort((a,b)=>(new Date(b.datetime))-(new Date(a.datetime)));
   //console.log(reduxSources);
+
   return (
     <ScrollView>
       <Card>
         <Card.Title>Profile</Card.Title>
+        <Card.Divider/>
+        <Text>{reduxUser.email}</Text>
+        <Text>Hello {reduxUser.name} !</Text>
         <Card.Divider/>
         <Button
         title="Logout"

@@ -45,23 +45,8 @@ import { useDispatch } from 'react-redux'
 
 //CONFIG
 import apiConfig from './apiConfig';
+import helpers from './User/helpers';
 
-function getUser(user,cb){
-  var q = apiConfig.server+apiConfig.usersDbUrl+"/users/"+user.sub
-  //console.log(q)
-  fetch(q)
-      .then(result=>result.json())
-      .then(u=>{
-          if(u.length===0)
-            createUser(user, cb);
-            else{
-              cb(Object.assign(user,u[0]));
-
-            }
-          //console.log(u);
-
-      });
-}
 
 
 function createUser(user,cb){
@@ -356,7 +341,7 @@ export default function Main({url}) {
           //setNews(news);
           dispatch({type:'news/newsRetrieved',payload:news})
         });
-        getUser(info, (u)=>{
+        helpers.getUser(info, (u)=>{
           //console.log(u)
           //INIT
           //if(!u.sources)

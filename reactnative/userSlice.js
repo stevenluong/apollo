@@ -4,7 +4,8 @@ const initialState = {
   sources:[],
   topics:[],
   interests:[],
-  visits:[]
+  visits:[],
+  _key:0
 }
 
 
@@ -75,15 +76,16 @@ export default function userReducer(state = initialState, action) {
       return u
     }
     case 'user/sourceToggled': {
+      console.log("IN")
       var i = state.sources.indexOf(action.payload);
-      //console.log("IN")
-      //console.log(i);
+      console.log(i);
       //console.log(action.payload)
       //console.log([...state.keywords])
       //console.log([...state.keywords].push(action.payload))
       var u = {
         ...state,
         //keywords:action.payload
+        //sources:[...state.sources]
         sources:i===-1?[...state.sources].concat(action.payload):[...state.sources].filter(k=>k!==action.payload)
       }
       helpers.updateUser(u);

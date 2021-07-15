@@ -71,6 +71,7 @@ export default function Sources() {
   }
 
   //console.log(keywords);
+  var sortedSources = reduxSources.slice().sort((a,b)=>a.name.localeCompare(b.name));
   return (
     <Grid container>
       <Grid item xs={12} md={12} lg={12}>

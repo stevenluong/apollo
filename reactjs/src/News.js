@@ -34,7 +34,7 @@ export default function News() {
       return reduxFilters.noKeywords.length === 0 || n.title.split(" ").filter(x=>reduxFilters.noKeywords.indexOf(x)!==-1).length===0
     })
   );
-  var sortedNews = filteredNews.sort((a,b)=>(new Date(b.datetime))-(new Date(a.datetime)))
+  var sortedNews = filteredNews.slice().sort((a,b)=>(new Date(b.datetime))-(new Date(a.datetime)))
   const imgStyle = {
     "objectFit": "cover",
   };

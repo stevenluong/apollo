@@ -53,7 +53,7 @@ export default {
     },
 
     editUser:function (user,cb){
-      console.log(user);
+      //console.log(user);
       user._rev=null;
       var q = apiConfig.server+apiConfig.usersUrl+"/users/"+user._key
       fetch(q,{

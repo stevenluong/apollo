@@ -7,17 +7,20 @@ import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './Base/app.json';
 import { NavigationContainer } from '@react-navigation/native';
-
+import { PersistGate } from 'redux-persist/integration/react'
 
 //REDUX
 import { Provider } from 'react-redux';
-import store from './Common/store';
+import configureStore from './Common/store';
+const {store,persistor} =configureStore();
 
 const ReduxApp = () => (
   <Provider store = { store }>
-    <NavigationContainer>
-      <App />
-    </NavigationContainer>
+    <PersistGate loading={null} persistor={persistor}>
+      <NavigationContainer>
+        <App />
+      </NavigationContainer>
+    </PersistGate>
   </Provider>
 )
 

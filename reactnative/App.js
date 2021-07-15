@@ -25,6 +25,8 @@ import NewsScreen from './NewsScreen'
 import FiltersScreen from './FiltersScreen'
 import SettingsScreen from './SettingsScreen'
 import LoginScreen from './LoginScreen'
+import LinkScreen from './LinkScreen'
+
 
 
 const Stack = createStackNavigator();
@@ -36,6 +38,8 @@ const App: () => React$Node = () => {
   const reduxNews = useSelector(selectNews);
   const selectSources = state => state.sources;
   const reduxSources = useSelector(selectSources);
+  const selectUser = state => state.user;
+  const reduxUser = useSelector(selectUser);
 
   //var news = [];
   reduxNews.length==0 && data.getNews(news=>{
@@ -46,76 +50,107 @@ const App: () => React$Node = () => {
     console.log(sources.length);
     dispatch({type:'sources/sourcesRetrieved',payload:sources})
   })
-
+  //console.log(reduxUser)
 
   return (
     <Stack.Navigator>
-    <Stack.Screen
-      name="Login"
-      component={LoginScreen}
-      options={({navigation})=>({
-        headerStyle:{
-          backgroundColor:'#2da6f7'//'blue'
-        },
-        headerTitle: 'Apollo',
-        })}
-      />
-      <Stack.Screen
-        name="News"
-        component={NewsScreen}
-        options={({navigation})=>({
-          //title: 'Apollo - List',
-          headerStyle:{
-            backgroundColor:'#2da6f7'//'blue'
-          },
-          headerTitle: 'News',
-          headerRight: () => (
-            <Button icon={<Icon type='material' name='filter-alt'/>} type='clear' onPress={()=>{
-              //navigation.setOptions({
-              //  gestureDirection: 'horizontal-inverted'
-              //    })
-              navigation.navigate('Filters')
-            }}/>
-          ),
-          //headerLeft: () => (
-          //  <Text></Text>
-          //  ),
-          //headerRight: () => (
-          //  <Button icon={<Icon type='material' name='settings'/>} type='clear' onPress={()=>navigation.navigate('Settings')}/>
-          //)
-          })}
-        />
-      <Stack.Screen
-        name="Filters"
-        component={FiltersScreen}
-        options={({navigation})=>({
-          //title: 'Apollo - List',
-          headerTitle: 'Filters',
-          headerRight: () => (
-            <Button icon={<Icon type='material' name='settings'/>} type='clear' onPress={()=>{
-              //navigation.setOptions({
-              //  gestureDirection: 'horizontal-inverted'
-              //    })
-              navigation.navigate('Settings')
-            }}/>
-          ),
-          //headerLeft: () => (
-          //  <Button icon={<Icon type='material' name='filter-alt'/>} onPress={handleFilterPressed}/>
-          //),
-          //...TransitionPresets.SlideFromRightIOS,
-          //headerRight: () => (
-          //  <Button icon={<Icon type='material' name='list'/>} onPress={()=>navigation.navigate('News')}/>
-          //)
-          })}
-        />
+    {
+      reduxUser._key===0 ? (
         <Stack.Screen
-          name="Settings"
-          component={SettingsScreen}
+          name="Login"
+          component={LoginScreen}
+          //initialParams={ authClient={authClient}}
           options={({navigation})=>({
-            //title: 'Apollo - List',
-            headerTitle: 'Settings',
+            headerStyle:{
+              backgroundColor:'#2da6f7'//'blue'
+            },
+            headerTitle: 'Apollo',
             })}
           />
+        ):(
+          <>
+          <Stack.Screen
+            name="News"
+            component={NewsScreen}
+            options={({navigation})=>({
+              //title: 'Apollo - List',
+              headerStyle:{
+                backgroundColor:'#2da6f7'//'blue'
+              },
+              headerTitle: 'News',
+              headerRight: () => (
+                <Button icon={<Icon type='material' name='filter-alt'/>} type='clear' onPress={()=>{
+                  //navigation.setOptions({
+                  //  gestureDirection: 'horizontal-inverted'
+                  //    })
+                  navigation.navigate('Filters')
+                }}/>
+              ),
+              headerLeft: null//() => (
+              //  <Text></Text>
+              //  ),
+              //headerRight: () => (
+              //  <Button icon={<Icon type='material' name='settings'/>} type='clear' onPress={()=>navigation.navigate('Settings')}/>
+              //)
+              })}
+            />
+          <Stack.Screen
+            name="Link"
+            component={LinkScreen}
+            options={({navigation})=>({
+              //title: 'Apollo - List',
+              headerTitle: 'Link',
+              //headerRight: () => (
+              //  <Button icon={<Icon type='material' name='settings'/>} type='clear' onPress={()=>{
+                  //navigation.setOptions({
+                  //  gestureDirection: 'horizontal-inverted'
+                  //    })
+              //    navigation.navigate('Settings')
+              //  }}/>
+              //),
+              //headerLeft: () => (
+              //  <Button icon={<Icon type='material' name='filter-alt'/>} onPress={handleFilterPressed}/>
+              //),
+              //...TransitionPresets.SlideFromRightIOS,
+              //headerRight: () => (
+              //  <Button icon={<Icon type='material' name='list'/>} onPress={()=>navigation.navigate('News')}/>
+              //)
+              })}
+            />
+          <Stack.Screen
+            name="Filters"
+            component={FiltersScreen}
+            options={({navigation})=>({
+              //title: 'Apollo - List',
+              headerTitle: 'Filters',
+              headerRight: () => (
+                <Button icon={<Icon type='material' name='settings'/>} type='clear' onPress={()=>{
+                  //navigation.setOptions({
+                  //  gestureDirection: 'horizontal-inverted'
+                  //    })
+                  navigation.navigate('Settings')
+                }}/>
+              ),
+              //headerLeft: () => (
+              //  <Button icon={<Icon type='material' name='filter-alt'/>} onPress={handleFilterPressed}/>
+              //),
+              //...TransitionPresets.SlideFromRightIOS,
+              //headerRight: () => (
+              //  <Button icon={<Icon type='material' name='list'/>} onPress={()=>navigation.navigate('News')}/>
+              //)
+              })}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={({navigation})=>({
+                //title: 'Apollo - List',
+                headerTitle: 'Settings',
+                })}
+              />
+              </>
+          )
+    }
     </Stack.Navigator>
   );
 };
