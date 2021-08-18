@@ -4,7 +4,8 @@ const initialState = {
   sources:[],
   topics:[],
   interests:[],
-  visits:[]
+  visits:[],
+  public:false
 }
 
 
@@ -15,6 +16,14 @@ export default function userReducer(state = initialState, action) {
       return {
         ...state,
         ...action.payload
+      }
+    }
+    case 'user/public': {
+      return {
+        ...state,
+        sources:["SBS","ABC"],
+        latestNews:{},
+        public:true
       }
     }
     case 'user/titleClicked': {
@@ -39,7 +48,8 @@ export default function userReducer(state = initialState, action) {
         })
         )
       };
-      helpers.updateUser(u);
+      if(!u.public)
+        helpers.updateUser(u);
       return u;
     }
     case 'user/latestNewsUpdated': {
@@ -47,7 +57,8 @@ export default function userReducer(state = initialState, action) {
         ...state,
         latestNews:action.payload
       };
-      helpers.updateUser(u);
+      if(!u.public)
+        helpers.updateUser(u);
       return u
     }
     case 'user/topicAdded': {
@@ -63,7 +74,8 @@ export default function userReducer(state = initialState, action) {
         ...state,
         topics:[...state.topics].filter(t=>t!==action.payload)
       };
-      helpers.updateUser(u);
+      if(!u.public)
+        helpers.updateUser(u);
       return u
     }
     case 'user/lastVisitUpdated': {
@@ -71,7 +83,8 @@ export default function userReducer(state = initialState, action) {
         ...state,
         visits:[...state.visits,action.payload]
       };
-      helpers.updateUser(u);
+      if(!u.public)
+        helpers.updateUser(u);
       return u
     }
     case 'user/sourceToggled': {
@@ -86,7 +99,8 @@ export default function userReducer(state = initialState, action) {
         //keywords:action.payload
         sources:i===-1?[...state.sources].concat(action.payload):[...state.sources].filter(k=>k!==action.payload)
       }
-      helpers.updateUser(u);
+      if(!u.public)
+        helpers.updateUser(u);
       return u
     }
     default:

@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Dashboard() {
+export default function Dashboard({publicUser}) {
   const classes = useStyles();
   const paper = clsx(classes.paper);
 
@@ -41,10 +41,14 @@ export default function Dashboard() {
           <Search />
         </Paper>
         <br/>
+        {!publicUser?(
+        <>
         <Paper className={paper}>
           <DashboardTopics/>
         </Paper>
         <br/>
+        </>
+      ):(<></>)}
         <Paper className={paper}>
           <Keywords/>
         </Paper>

@@ -45,7 +45,7 @@ import { useDispatch } from 'react-redux'
 
 //CONFIG
 import apiConfig from './apiConfig';
-import helpers from './User/helpers';
+import helpers from '../User/helpers';
 
 
 
@@ -126,6 +126,7 @@ function getNews(cb){
   //var q = "https://apollo-loopback.slapps.fr/api/News?filter[where][and][0][datetime][gt]="+s+"&filter[where][and][1][datetime][lt]="+e
   var q = apiConfig.server+apiConfig.dbUrl+"/news";
   //console.log(q)
+  console.log(q);
   fetch(q)
       .then(result=>result.json())
       .then(titles=>{
@@ -140,7 +141,7 @@ function getNews(cb){
               time:moment(n.datetime).format("HH:mm"),
               title:n.title.trim().charAt(0).toUpperCase() + n.title.trim().slice(1)
             }
-          }
+          });
           //news = titles;
           cb(news);
       });
@@ -235,11 +236,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Main({url}) {
+export default function Main({url,publicUser}) {
   const { authState, authService } = useOktaAuth();
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [userRequested, setUserRequested] = React.useState(false);
+  const [firstConnection, setFirstConnection] = React.useState(true);
   //const [user, setUser] = React.useState({_key:0});
   //const [sources, setSources] = React.useState([]);
   //const [news, setNews] = React.useState([])
@@ -325,58 +327,65 @@ export default function Main({url}) {
     </header>
   </div>)
   }
-  if(!authState.isAuthenticated)
+  if(!authState.isAuthenticated && !publicUser)
+    //console.log("AUTH")
     return(
       <Redirect to={{ pathname: '/login' }}/>
     )
-    if(!userRequested){
-      setUserRequested(true);
-      authService.getUser().then((info) => {
-        //setUserInfo(info);
-        //console.log(info);
-        getSources(sources=>{
-          dispatch({type:'sources/sourcesRetrieved', payload:sources})
-        });
-        getNews(news =>{
-          //setNews(news);
-          dispatch({type:'news/newsRetrieved',payload:news})
-        });
-        helpers.getUser(info, (u)=>{
-          //console.log(u)
-          //INIT
-          //if(!u.sources)
-          //  u.sources = [];
-          //if(!lastVisitSet){
-          //  console.log("LAST VISIT")
-          //  setLastVisitSet(true)
-          //VISITS
-          //console.log("VISITS");
-          //var now = moment();
-          //if(!u.visits)
-          //  u.visits = [];
-          //u = Object.assign(u, {visits:[...u.visits,now.toString()]})
-          //console.log(u.visits);
-          //var u2 = Object.assign(u, {visits:[..]})
-          //updateUser(u);
-          dispatch({type:'user/retrieved', payload:u})
-          dispatch({type:'user/lastVisitUpdated', payload:moment().toString()})
-          //setUser(u)
-
-          //console.log("TOPICS")
-          //var t = []
-          //if(!u.topics)
-          //  t = u.topics;
-          //setTopics(t)
-          //}
-
-
-
-          //console.log("TOPICS")
-          //console.log(u.topics)
-        });
-        //setUser(info)
-      });
+  if(firstConnection){
+    setFirstConnection(false);
+    getSources(sources=>{
+      dispatch({type:'sources/sourcesRetrieved', payload:sources})
+    });
+    getNews(news =>{
+      //setNews(news);
+      dispatch({type:'news/newsRetrieved',payload:news})
+    });
+    if(publicUser){
+      //setUserRequested(true);
+      dispatch({type:'user/public', payload:{}})
     }
+  }
+
+
+
+  if(!userRequested && !publicUser){
+    setUserRequested(true);
+    authService.getUser().then((info) => {
+      //setUserInfo(info);
+      //console.log(info);
+      helpers.getUser(info, (u)=>{
+        console.log(u)
+        //INIT
+        //if(!u.sources)
+        //  u.sources = [];
+        //if(!lastVisitSet){
+        //  console.log("LAST VISIT")
+        //  setLastVisitSet(true)
+        //VISITS
+        //console.log("VISITS");
+        //var now = moment();
+        //if(!u.visits)
+        //  u.visits = [];
+        //u = Object.assign(u, {visits:[...u.visits,now.toString()]})
+        //console.log(u.visits);
+        //var u2 = Object.assign(u, {visits:[..]})
+        //updateUser(u);
+        dispatch({type:'user/retrieved', payload:u})
+        dispatch({type:'user/lastVisitUpdated', payload:moment().toString()})
+        //setUser(u)
+        //console.log("TOPICS")
+        //var t = []
+        //if(!u.topics)
+        //  t = u.topics;
+        //setTopics(t)
+        //}
+        //console.log("TOPICS")
+        //console.log(u.topics)
+      });
+      //setUser(info)
+    });
+  }
   //console.log(filteredNews);
   //console.log(filters);
   //if(reduxNews.length!==0 && !sourcesFiltered){
@@ -410,13 +419,13 @@ export default function Main({url}) {
   if(url==="profile")
     content = <Profile/>
   if(url==="sources")
-    content = <Sources/>
+    content = <Sources publicUser={publicUser}/>
   if(url==="topics")
     content = <Topics/>
   if(url==="analytics")
     content = <Analytics/>
   if(url==="dashboard")
-    content = <Dashboard/>
+    content = <Dashboard publicUser={publicUser}/>
 
 
   //console.log(reduxUser);
@@ -435,7 +444,7 @@ export default function Main({url}) {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Apollo - News aggregator
+            Apollo - News aggregator {reduxUser.public?("- Public"):("")}
           </Typography>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
@@ -459,6 +468,9 @@ export default function Main({url}) {
         <Divider />
         <List>
         <div>
+
+            {!reduxUser.public?(
+            <>
             <ListItem button component={RouterLink} to="/">
               <ListItemIcon>
                 <LayersIcon />
@@ -477,11 +489,23 @@ export default function Main({url}) {
               </ListItemIcon>
               <ListItemText primary="Analytics" />
             </ListItem>
+            </>
+            ):(
+              <ListItem button component={RouterLink} to="/public">
+                <ListItemIcon>
+                  <LayersIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" />
+              </ListItem>
+            )}
         </div>
         </List>
         <Divider />
         <List>
         <div>
+
+          {!reduxUser.public?(
+          <>
           <ListItem button component={RouterLink} to="/sources">
             <ListItemIcon>
               <TripOriginIcon />
@@ -494,9 +518,20 @@ export default function Main({url}) {
             </ListItemIcon>
             <ListItemText primary="Profile" />
           </ListItem>
+          </>
+          ):(
+            <ListItem button component={RouterLink} to="/public/sources">
+              <ListItemIcon>
+                <TripOriginIcon />
+              </ListItemIcon>
+              <ListItemText primary="Sources" />
+            </ListItem>
+          )}
         </div>
         </List>
         <Divider />
+        {!reduxUser.public?(
+        <>
         <List>
         <div>
           <ListItem button onClick={() => {authService.logout()}}>
@@ -507,6 +542,8 @@ export default function Main({url}) {
           </ListItem>
         </div>
         </List>
+        </>
+        ):("")}
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

@@ -21,12 +21,14 @@ const AppWithRouterAccess = () => {
               onAuthRequired={onAuthRequired}
               pkce={true} >
       <Switch>
+        <Route path='/public' exact={true} render={() => <Main url="dashboard" publicUser={true} />} />
         <SecureRoute path='/' exact={true} render={() => <Main url="dashboard" />} />
         <Route path='/login' render={() => <SignInSide baseUrl={oktaConfig.url} />} />
         <Route path='/signup' render={() => <SignUp baseUrl={oktaConfig.url} />} />
         <Route path='/implicit/callback' component={LoginCallback} />
         <SecureRoute path='/profile' render={() => <Main url="profile" />} />
         <SecureRoute path='/sources' render={() => <Main url="sources" />} />
+        <Route path='/public/sources' render={() => <Main url="sources" publicUser={true}/>} />
         <SecureRoute path='/topics' render={() => <Main url="topics" />} />
         <SecureRoute path='/analytics' render={() => <Main url="analytics" />} />
         <Route component={Notfound} />

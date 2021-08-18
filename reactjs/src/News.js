@@ -64,11 +64,14 @@ export default function News() {
     */
     //var u = Object.assign(reduxUser, {interests:t,interests2:t2})
     //setUser(u);
-    dispatch({type:'user/titleClicked',payload:n.title})
     var latestNews =reduxUser.latestNews;
-    if(!reduxUser.latestNews || reduxUser.latestNews.datetime<n.datetime){
-      //u = Object.assign(reduxUser, {lastestNews:n})
-      dispatch({type:'user/latestNewsUpdated',payload:n})
+    if(!reduxUser.public){
+      dispatch({type:'user/titleClicked',payload:n.title})
+
+      if(!reduxUser.latestNews || reduxUser.latestNews.datetime<n.datetime){
+        //u = Object.assign(reduxUser, {lastestNews:n})
+        dispatch({type:'user/latestNewsUpdated',payload:n})
+      }
     }
     //console.log(u);
     //updateUser(u);
