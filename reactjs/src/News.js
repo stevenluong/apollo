@@ -96,7 +96,7 @@ export default function News() {
             </Hidden>
               <TableCell><small>{n.time}<br/>{n.source}</small></TableCell>
               <TableCell>
-              <VerticalAlignTopIcon style={latestNews._id!=n._id?{display: 'none'}:{}}/>
+              <VerticalAlignTopIcon style={latestNews&&latestNews._id==n._id?{}:{display: 'none'}}/>
               <Link href={n.link} target="_blank" rel="noopener noreferrer" onClick={()=>handleLinkClick(n)}>{n.title} </Link>
                </TableCell>
             </TableRow>

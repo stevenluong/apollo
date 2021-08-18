@@ -22,7 +22,7 @@ export default function userReducer(state = initialState, action) {
       return {
         ...state,
         sources:["SBS","ABC"],
-        latestNews:{},
+        //latestNews:{},
         public:true
       }
     }
