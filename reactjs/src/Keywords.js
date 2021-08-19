@@ -43,12 +43,13 @@ export default function Keywords() {
   reduxSourceFilteredNews.map(n=>{
     var t = n.title;
     var s = t.split(" ")
-    return s.map(i =>{
-      if(i in keywords)
-        keywords[i] = keywords[i]+1;
+    return s.map(w =>{
+      var word = w.toLowerCase();
+      if(word in keywords && word!="")
+        keywords[word] = keywords[word]+1;
       else
-        keywords[i] = 1
-      return keywords[i]
+        keywords[word] = 1
+      return keywords[word]
     })
   })
   var rawKeywords = []
