@@ -5,7 +5,8 @@ const initialState = {
   topics:[],
   interests:[],
   visits:[],
-  public:false
+  public:false,
+  readNews:[]
 }
 
 
@@ -28,30 +29,40 @@ export default function userReducer(state = initialState, action) {
     }
     case 'user/titleClicked': {
       console.log(state);
+      var news = action.payload;
+      var title = news.title;
+      var split = title.split(" ");
+      var yesterday = new Date();
+      yesterday.setDate(yesterday.getDate()-1)
+      console.log(yesterday)
       var u = {
         ...state,
         interests:state.interests.map(i=>{
-          if(action.payload.split(" ").indexOf(i.word)!==-1)
+          if(split.indexOf(i.word)!==-1)
             return {
               word:i.word,
               count:i.count+1
             }
           else
             return i;
-        }).concat(action.payload.split(" ").filter(w=>{
-          return state.interests.map(i=> i.word).indexOf(w)===-1
+        })
+        //.filter(i=>i.word.length>4)
+        .concat(split.filter(w=>{
+          return state.interests.length>0 && state.interests.map(i=> i.word).indexOf(w)===-1 && i.word.length>4
         }).map(i=>{
           return{
             word:i,
             count:1
           }
         })
-        )
+      ),
+      readNews:[...state.readNews.filter(n=>new Date(n.datetime)>yesterday),action.payload]
       };
       if(!u.public)
         helpers.updateUser(u);
       return u;
     }
+    /*
     case 'user/latestNewsUpdated': {
       var u = {
         ...state,
@@ -61,6 +72,7 @@ export default function userReducer(state = initialState, action) {
         helpers.updateUser(u);
       return u
     }
+    */
     case 'user/topicAdded': {
       var u = {
         ...state,
@@ -83,8 +95,8 @@ export default function userReducer(state = initialState, action) {
         ...state,
         visits:[...state.visits,action.payload]
       };
-      if(!u.public)
-        helpers.updateUser(u);
+      //if(!u.public)
+        //helpers.updateUser(u);
       return u
     }
     case 'user/sourceToggled': {

@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Title from './Common/Title';
 import Hidden from '@material-ui/core/Hidden';
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
+import Done from '@material-ui/icons/Done';
 
 //REDUX
 import { useSelector } from 'react-redux';
@@ -24,7 +25,7 @@ export default function News() {
   const reduxUser = useSelector(selectUser);
   const selectFilters = state => state.filters;
   const reduxFilters = useSelector(selectFilters);
-  var latestNews = reduxUser.latestNews;
+  //var latestNews = reduxUser.latestNews;
   const filteredNews = useSelector(state =>
     state.news.filter(n=>{
       return reduxUser.sources.indexOf(n.source)!==-1
@@ -64,13 +65,15 @@ export default function News() {
     */
     //var u = Object.assign(reduxUser, {interests:t,interests2:t2})
     //setUser(u);
-    var latestNews =reduxUser.latestNews;
-    dispatch({type:'user/titleClicked',payload:n.title})
+    //var latestNews =reduxUser.latestNews;
+    dispatch({type:'user/titleClicked',payload:n})
 
+    /*
     if(!reduxUser.latestNews || reduxUser.latestNews.datetime<n.datetime){
       //u = Object.assign(reduxUser, {lastestNews:n})
       dispatch({type:'user/latestNewsUpdated',payload:n})
     }
+    */
     //console.log(u);
     //updateUser(u);
   }
@@ -96,9 +99,12 @@ export default function News() {
             </Hidden>
               <TableCell><small>{n.time}<br/>{n.source}</small></TableCell>
               <TableCell>
-              <VerticalAlignTopIcon style={latestNews&&latestNews._id==n._id?{}:{display: 'none'}}/>
-              <Link href={n.link} target="_blank" rel="noopener noreferrer" onClick={()=>handleLinkClick(n)}>{n.title} </Link>
-               </TableCell>
+
+              <Link href={n.link} target="_blank" rel="noopener noreferrer" onClick={()=>handleLinkClick(n)} color={reduxUser.readNews.map(n=>n._id).indexOf(n._id)==-1?"primary":"textPrimary"}>
+                {n.title} 
+              </Link>
+              <Done style={reduxUser.readNews.map(n=>n._id).indexOf(n._id)!==-1?{}:{display: 'none'}} fontSize="small"/>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
