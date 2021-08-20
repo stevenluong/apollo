@@ -48,7 +48,7 @@ export default function userReducer(state = initialState, action) {
         })
         //.filter(i=>i.word.length>4)
         .concat(split.filter(w=>{
-          return state.interests.length>0 && state.interests.map(i=> i.word).indexOf(w)===-1 && i.word.length>4
+          return state.interests.map(i=> i?i.word:"").indexOf(w)===-1 && w.length>4
         }).map(i=>{
           return{
             word:i,
