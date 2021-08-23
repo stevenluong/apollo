@@ -10,6 +10,7 @@ import Title from './Common/Title';
 import Hidden from '@material-ui/core/Hidden';
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import Done from '@material-ui/icons/Done';
+import WhatshotIcon from '@material-ui/icons/Whatshot';
 
 //REDUX
 import { useSelector } from 'react-redux';
@@ -97,11 +98,11 @@ export default function News() {
             <Hidden xlDown>
               <TableCell><img style={imgStyle} src={n.image_link} height="40" width="40" alt=""/></TableCell>
             </Hidden>
-              <TableCell><small>{n.time}<br/>{n.source}</small></TableCell>
-              <TableCell>
-
+              <TableCell style={{width: "10%"}}><small>{n.time}<br/>{n.source}</small></TableCell>
+              <TableCell style={{width: "90%"}}>
+              <WhatshotIcon style={n.title.split(" ").filter(w=>reduxUser.topics.indexOf(w)!==-1).length>0?{}:{display: 'none'}} fontSize="small"/>
               <Link href={n.link} target="_blank" rel="noopener noreferrer" onClick={()=>handleLinkClick(n)} color={reduxUser.readNews.map(n=>n._id).indexOf(n._id)==-1?"primary":"textPrimary"}>
-                {n.title} 
+                {n.title}
               </Link>
               <Done style={reduxUser.readNews.map(n=>n._id).indexOf(n._id)!==-1?{}:{display: 'none'}} fontSize="small"/>
               </TableCell>

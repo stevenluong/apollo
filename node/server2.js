@@ -128,21 +128,21 @@ var getNewTitles = function(source, callback){
         callback(titles);
     })
     feedparser.on('readable', function() {
-        var item;
-        while (item = this.read()) {
+      var item;
+      while (item = this.read()) {
 	    //console.log(item);
             //TODO clean this
-	    var date = item.date ? item.date : item.meta.date;   
-		/*
-	    if(source.name=="BBC"){
-	       console.log(date);
-	       console.log(new Date(source.lastPulled)<=new Date(date));
-	    }
-	    */
-            if(new Date(source.lastPulled)<=new Date(date)){
-              titles.push(read(source,item));
-	    }
-        };
+  	    var date = item.date ? item.date : item.meta.date;
+
+  	    //if(source.name=="TechCrunch"){
+        //  console.log(item);
+  	       //console.log(date);
+  	       //console.log(new Date(source.lastPulled)<=new Date(date));
+  	    //}
+        if(new Date(source.lastPulled)<=new Date(date)){
+          titles.push(read(source,item));
+  	    }
+      };
     });
 
 }
