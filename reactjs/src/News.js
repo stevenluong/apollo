@@ -102,7 +102,7 @@ export default function News() {
               <TableCell style={{width: "90%"}}>
               <WhatshotIcon style={n.title.split(" ").filter(w=>reduxUser.topics.indexOf(w)!==-1).length>0?{}:{display: 'none'}} fontSize="small"/>
               <Link href={n.link} target="_blank" rel="noopener noreferrer" onClick={()=>handleLinkClick(n)} color={reduxUser.readNews.map(n=>n._id).indexOf(n._id)==-1?"primary":"textPrimary"}>
-                {n.title}
+                {n.title.trim().charAt(0).toUpperCase() + n.title.trim().slice(1)}
               </Link>
               <Done style={reduxUser.readNews.map(n=>n._id).indexOf(n._id)!==-1?{}:{display: 'none'}} fontSize="small"/>
               </TableCell>

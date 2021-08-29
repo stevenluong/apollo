@@ -139,7 +139,7 @@ function getNews(cb){
               link:n.link.replace("http:","https:"),
               image_link:n.image_link?n.image_link.replace("http:","https:"):"",
               time:moment(n.datetime).format("HH:mm"),
-              title:n.title.trim().charAt(0).toUpperCase() + n.title.trim().slice(1)
+              //title:n.title.trim().charAt(0).toUpperCase() + n.title.trim().slice(1)
             }
           });
           //news = titles;
