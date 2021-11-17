@@ -79,6 +79,7 @@ export default function News() {
     //updateUser(u);
   }
   //console.log(user.visits)
+  //<WhatshotIcon style={n.title.split(" ").filter(w=>reduxUser.topics.indexOf(w)!==-1).length>0?{}:{display: 'none'}} fontSize="small"/>
   return (
     <React.Fragment>
       <Title id="news">News ({sortedNews.length})</Title>
@@ -100,7 +101,8 @@ export default function News() {
             </Hidden>
               <TableCell style={{width: "10%"}}><small>{n.time}<br/>{n.source}</small></TableCell>
               <TableCell style={{width: "90%"}}>
-              <WhatshotIcon style={n.title.split(" ").filter(w=>reduxUser.topics.indexOf(w)!==-1).length>0?{}:{display: 'none'}} fontSize="small"/>
+              <WhatshotIcon style={reduxUser.topics.filter(t=>n.title.includes(t)).length>0?{}:{display: 'none'}} fontSize="small"/>
+
               <Link href={n.link} target="_blank" rel="noopener noreferrer" onClick={()=>handleLinkClick(n)} color={reduxUser.readNews.map(n=>n._id).indexOf(n._id)==-1?"primary":"textPrimary"}>
                 {n.title.trim().charAt(0).toUpperCase() + n.title.trim().slice(1)}
               </Link>
