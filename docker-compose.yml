@@ -23,7 +23,7 @@ services:
         volumes:
             - ./reactjs/:/reactjs
             - /reactjs/node_modules
-        restart: always
+              #restart: always
         mem_limit: 64m
         networks:
             - nginx_default

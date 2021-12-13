@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apollo-reactjs-deployment
+  labels:
+    app: apollo-reactjs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apollo-reactjs
+  template:
+    metadata:
+      labels:
+        app: apollo-reactjs
+    spec:
+      containers:
+      - name: apollo-reactjs
+        image: stevenluong/apollo-reactjs:v0.1
+        #ports:
+        #- containerPort: 80
