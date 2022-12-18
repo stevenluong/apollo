@@ -22,7 +22,7 @@ export default function userReducer(state = initialState, action) {
     case 'user/public': {
       return {
         ...state,
-        sources:["SBS","ABC","TechCrunch"],
+        sources:["The Verge","LifeHacker","Korben","JDG","Challenges","TechCrunch"],
         //latestNews:{},
         public:true
       }

@@ -1,5 +1,6 @@
 {
   "name": "reactjs",
+   "homepage":"https://slapps.fr/apollo/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

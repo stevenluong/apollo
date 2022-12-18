@@ -3,12 +3,12 @@ var request = require('request');
 var FeedParser = require('feedparser');
 
 //TODO vars
-var server_host= "athena.slapps.fr";
+var server_host= "slapps.fr";
 var protocol= "https";
 //var server_host= "apollo_loopback_1";
 //var server_port = "3000";
-var news_path = '/_db/production/apollo/news';
-var sources_path = '/_db/production/apollo/sources';
+var news_path = '/athena/_db/production/apollo/news';
+var sources_path = '/athena/_db/production/apollo/sources';
 
 //MAIN
 var process = function(){

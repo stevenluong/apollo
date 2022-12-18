@@ -10,7 +10,7 @@ services:
         volumes:
             - ./node/:/node
             - /node/node_modules
-        restart: always
+        #restart: always
         networks:
             - nginx_default
     reactjs:
@@ -20,10 +20,10 @@ services:
         #    - loopback
         #ports:
         #    - "8001:80"
+        restart: always
         volumes:
             - ./reactjs/:/reactjs
             - /reactjs/node_modules
-              #restart: always
         mem_limit: 64m
         networks:
             - nginx_default
