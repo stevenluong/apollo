@@ -1,4 +1,4 @@
 # Apollo
 
-https://slapps.fr/apollo/
+https://slapps.fr/apollo/public
 
