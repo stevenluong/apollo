@@ -4,7 +4,7 @@
     "license": "",
     "repository": "https://github.com/stevenluong/apollo",
     "dependencies": {
-        "@okta/okta-sdk-nodejs": "^3.2.0",
+        "@okta/okta-sdk-nodejs": "^3.3.2",
         "bower": "*",
         "connect": "*",
         "cron": "*",
